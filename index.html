@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Streaming Player</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 class="title">🎬 Video Streaming Player</h1>
+      <p class="subtitle">High-quality video streaming with Node.js backend</p>
+    </div>
+
+    <div class="video-container">
+      <video id="videoPlayer" controls preload="metadata">
+        <source src="http://localhost:3000/video" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <div class="video-info">
+      <h3 class="info-title">📊 Video Information</h3>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">Status</div>
+          <div class="info-value" id="videoStatus">Loading...</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Duration</div>
+          <div class="info-value" id="videoDuration">--:--</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Current Time</div>
+          <div class="info-value" id="currentTime">--:--</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Progress</div>
+          <div class="info-value" id="progress">0%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-primary" id="playPauseBtn">
+        <span id="playIcon">▶️</span>
+        <span id="playText">Play</span>
+      </button>
+      <button class="btn btn-secondary" id="fullscreenBtn">
+        🔍 Fullscreen
+      </button>
+      <button class="btn btn-secondary" id="muteBtn">
+        🔊 Mute
+      </button>
+      <button class="btn btn-secondary" id="reloadBtn">
+        🔄 Reload
+      </button>
+    </div>
+
+    <div class="status connected" id="connectionStatus">
+      ✅ Connected to streaming server
+    </div>
+
+    <div class="loading" id="loadingIndicator">
+      <div class="spinner"></div>
+      <p>Loading video...</p>
+    </div>
+
+    <div class="footer">
+      <p>Built with Node.js & Express | Video streaming optimized for large files</p>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
