@@ -69,10 +69,11 @@
     }
 
     .file-item {
-      display: flex;
+      display: grid;
+      grid-template-columns: 50px 2.5fr 2fr 1.2fr;
       align-items: center;
-      justify-content: space-between;
-      padding: 15px;
+      gap: 20px;
+      padding: 20px;
       border-bottom: 1px solid #e2e8f0;
       transition: background-color 0.2s ease;
     }
@@ -85,7 +86,36 @@
       border-bottom: none;
     }
 
-    .file-info {
+    .file-header {
+      background-color: #f8fafc;
+      border-bottom: 2px solid #e2e8f0;
+      font-weight: 600;
+      color: #4a5568;
+    }
+
+    .file-header .file-checkbox-column {
+      justify-content: center;
+    }
+
+    .file-checkbox-column {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .file-checkbox {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      accent-color: #667eea;
+    }
+
+    .file-name-column {
+      display: flex;
+      align-items: center;
+    }
+
+    .file-name-info {
       display: flex;
       align-items: center;
       gap: 15px;
@@ -109,9 +139,102 @@
       font-size: 0.9rem;
     }
 
-    .file-actions {
+    .file-metadata-column {
+      padding: 0 10px;
+    }
+
+    .file-metadata {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 8px;
+      background: #f8fafc;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .metadata-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      padding: 2px 0;
+    }
+
+    .metadata-label {
+      color: #718096;
+      font-weight: 500;
+      font-size: 0.8rem;
+    }
+
+    .metadata-value {
+      color: #2d3748;
+      font-weight: 600;
+      font-size: 0.8rem;
+      background: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .no-metadata {
+      color: #cbd5e0;
+      font-style: italic;
+      text-align: center;
+    }
+
+    .file-actions-column {
       display: flex;
       gap: 10px;
+      justify-content: flex-end;
+    }
+
+    /* Responsive design for smaller screens */
+    @media (max-width: 1200px) {
+      .file-item {
+        grid-template-columns: 50px 2fr 1.5fr 1fr;
+        gap: 15px;
+        padding: 15px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .file-item {
+        grid-template-columns: 50px 1.5fr 1fr 1fr;
+        gap: 10px;
+        padding: 12px;
+      }
+      
+      .metadata-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+      }
+      
+      .metadata-value {
+        align-self: flex-end;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .file-item {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 15px;
+      }
+      
+      .file-checkbox-column,
+      .file-name-column,
+      .file-metadata-column,
+      .file-actions-column {
+        justify-content: center;
+        text-align: center;
+      }
+      
+      .file-actions-column {
+        flex-direction: column;
+        gap: 8px;
+      }
     }
 
     .btn-small {
@@ -383,6 +506,17 @@
   </style>
 </head>
 <body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="/" class="navbar-brand">🎬 Multimedia File System</a>
+      <ul class="navbar-nav">
+        <li><a href="/">Video Streaming Player</a></li>
+        <li><a href="/files-manager" class="active">File Manager</a></li>
+      </ul>
+    </div>
+  </nav>
+
   <div class="container file-manager">
     <div class="header">
       <h1 class="title">📁 File Manager</h1>
@@ -489,5 +623,6 @@
   </div>
 
   <script src="/js/file-manager.js"></script>
+  <script src="/js/navbar.js"></script>
 </body>
 </html>
