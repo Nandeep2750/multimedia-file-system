@@ -17,6 +17,12 @@ A modern, responsive video streaming application built with Node.js, Express, an
 - 🔄 **Automatic streaming** with range request support
 - 📈 **Progress tracking** and loading indicators
 - 🌐 **Server connectivity status** monitoring
+- 📤 **File upload system** with drag & drop support
+- 📥 **File download system** with streaming capabilities
+- 🗜️ **ZIP compression** for multiple file downloads
+- 📊 **File management interface** with tabs and organization
+- 🔍 **File filtering** by type, size, and upload date
+- 🗑️ **Bulk file operations** (select, download, delete)
 
 ## 🚀 Quick Start
 
@@ -57,16 +63,19 @@ A modern, responsive video streaming application built with Node.js, Express, an
 ```
 test-video/
 ├── index.html              # Main HTML file with clean structure
-├── index.js                # Express server with video streaming
+├── file-manager.html       # File management interface
+├── index.js                # Express server with video streaming & file management
 ├── package.json            # Project dependencies and scripts
 ├── .gitignore              # Git ignore rules
 ├── README.md               # Project documentation
 ├── sample-video.mp4        # Your video file (not tracked in git)
+├── uploads/                # Uploaded files directory (auto-created)
 └── public/                 # Static assets directory
     ├── css/
     │   └── styles.css      # All CSS styles and responsive design
     └── js/
-        └── app.js          # JavaScript functionality and video controls
+        ├── app.js          # JavaScript functionality and video controls
+        └── file-manager.js # File management functionality
 ```
 
 ## 🛠️ Technical Details
@@ -96,6 +105,14 @@ test-video/
 - **Mute/Unmute**: Click mute button or press `M`
 - **Reload**: Click reload button or press `R`
 
+### File Management
+
+- **Upload Files**: Drag & drop files or click to browse (Max: 100MB per file)
+- **Download Files**: Individual downloads or bulk ZIP downloads
+- **File Organization**: Tabs for All Files, Recent, and Large Files
+- **Bulk Operations**: Select multiple files for download or deletion
+- **File Types**: Supports images, videos, documents, and archives
+
 ### Keyboard Shortcuts
 
 | Key | Action |
@@ -123,6 +140,22 @@ To use a different video file or path, update the `filePath` in the `/video` rou
 const filePath = path.join(__dirname, 'your-video-file.mp4');
 ```
 
+### File Upload Settings
+
+Configure file upload limits and allowed types in the multer configuration:
+
+```javascript
+const upload = multer({ 
+  storage: storage,
+  limits: {
+    fileSize: 100 * 1024 * 1024, // 100MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Customize allowed file types here
+  }
+});
+```
+
 ## 📱 Responsive Design
 
 The application is designed to work seamlessly across all devices:
@@ -130,6 +163,27 @@ The application is designed to work seamlessly across all devices:
 - **Desktop**: Full-featured interface with all controls visible
 - **Tablet**: Optimized layout for medium screens
 - **Mobile**: Stacked controls and mobile-friendly touch targets
+
+## 🌐 API Endpoints
+
+### Video Streaming
+- `GET /` - Main video player page
+- `GET /video` - Video streaming with range request support
+- `GET /files-manager` - File management interface
+
+### File Management
+- `POST /upload` - Upload single file
+- `POST /upload-multiple` - Upload multiple files
+- `GET /files` - List all uploaded files
+- `GET /download/:filename` - Download single file
+- `POST /download-zip` - Download multiple files as ZIP
+
+- `DELETE /files/:filename` - Delete file
+
+### Static Files
+- `GET /css/styles.css` - Main stylesheet
+- `GET /js/app.js` - Video player JavaScript
+- `GET /js/file-manager.js` - File manager JavaScript
 
 ## 🚀 Performance Features
 
