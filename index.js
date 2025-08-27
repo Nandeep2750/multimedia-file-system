@@ -8,7 +8,8 @@ const app = express();
 const PORT = 3000;
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: '500mb' }));
+app.use(express.urlencoded({ limit: '500mb', extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 
@@ -116,7 +117,7 @@ app.post("/upload", (req, res) => {
     const busboy = Busboy({ 
       headers: req.headers,
       limits: {
-        fileSize: 100 * 1024 * 1024, // 100MB limit
+        fileSize: 500 * 1024 * 1024, // 500MB limit
         files: 1 // Single file upload
       },
       preservePath: true
@@ -150,15 +151,24 @@ app.post("/upload", (req, res) => {
           return;
         }
 
-        // Validate file size
-        if (fileInfo.size && fileInfo.size > 100 * 1024 * 1024) {
-          console.log('File too large:', fileInfo.size);
-          uploadError = new Error('File too large (max 100MB)');
+        // Validate file size - check both fileInfo.size and actual file size
+        const maxSize = 500 * 1024 * 1024; // 500MB limit
+        
+        if (fileInfo.size && fileInfo.size > maxSize) {
+          console.log('File too large (from fileInfo):', fileInfo.size);
+          uploadError = new Error('File too large (max 500MB)');
           if (!isResponseSent) {
             isResponseSent = true;
-            res.status(400).json({ error: "File too large (max 100MB)" });
+            res.status(400).json({ error: "File too large (max 500MB)" });
           }
+          // Destroy the file stream to prevent further processing
+          file.destroy();
           return;
+        }
+
+        // Additional validation: check if file size is known and exceeds limit
+        if (fileInfo.size === undefined || fileInfo.size === null) {
+          console.log('File size unknown, will validate during upload');
         }
 
         // Generate unique filename with original extension
@@ -173,6 +183,34 @@ app.post("/upload", (req, res) => {
 
         // Create write stream
         const writeStream = fs.createWriteStream(filePath);
+
+        // Track file size during upload
+        let uploadedBytes = 0;
+
+        // Monitor file size during upload
+        file.on('data', (chunk) => {
+          uploadedBytes += chunk.length;
+          if (uploadedBytes > maxSize) {
+            console.log('File size limit exceeded during upload:', uploadedBytes);
+            uploadError = new Error('File too large (max 500MB)');
+            file.destroy();
+            writeStream.destroy();
+            // Clean up partial file
+            if (fs.existsSync(filePath)) {
+              fs.unlinkSync(filePath);
+            }
+            if (!isResponseSent) {
+              isResponseSent = true;
+              res.status(400).json({ error: "File too large (max 500MB)" });
+            }
+            return;
+          }
+          
+          // Log progress for large files
+          if (uploadedBytes % (10 * 1024 * 1024) === 0) { // Log every 10MB
+            console.log(`Upload progress for ${fileInfo.filename}: ${Math.round(uploadedBytes / (1024 * 1024))}MB`);
+          }
+        });
 
         // Handle file stream completion
         writeStream.on('finish', () => {
@@ -336,7 +374,12 @@ app.post("/upload-multiple", (req, res) => {
   try {
     // Parse multipart form data manually for streaming
     const Busboy = require('busboy');
-    const busboy = Busboy({ headers: req.headers });
+    const busboy = Busboy({ 
+      headers: req.headers,
+      limits: {
+        fileSize: 500 * 1024 * 1024 // 500MB limit
+      }
+    });
     const uploadedFiles = [];
     let fileCount = 0;
     

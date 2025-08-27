@@ -107,7 +107,7 @@ test-video/
 
 ### File Management
 
-- **Upload Files**: Drag & drop files or click to browse (Max: 100MB per file)
+- **Upload Files**: Drag & drop files or click to browse (Max: 500MB per file)
 - **Download Files**: Individual downloads or bulk ZIP downloads
 - **File Organization**: Tabs for All Files, Recent, and Large Files
 - **Bulk Operations**: Select multiple files for download or deletion
